@@ -1,0 +1,39 @@
+{
+  "description": "ZincJS Testing",
+  "main": "test/test.js",
+  "files": [
+    "package.json",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alan-wu/ZincJS-Testing.git"
+  },
+  "keywords": [
+    "library",
+    "webgl",
+    "3d",
+    "zincjs"
+  ],
+  "author": "Alan Wu <alan.wu@auckland.ac.nz>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alan-wu/ZincJS-Testing/issues"
+  },
+  "homepage": "https://github.com/alan-wu/ZincJS-Testing/",
+  "devDependencies": {
+    "chai": "*",
+    "mocha": "*",
+    "jsdom": "*",
+    "canvas": "*",
+    "gl": "*"
+  },
+  "dependencies": {
+    "zincjs": "^0.28.4"
+  },
+  "private": true
+}
