@@ -30,7 +30,8 @@
     "mocha": "*",
     "jsdom": "*",
     "canvas": "*",
-    "gl": "*"
+    "gl": "*",
+    "local-xmlhttprequest": "*"
   },
   "dependencies": {
     "zincjs": "^0.28.4"

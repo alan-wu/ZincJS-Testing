@@ -1,12 +1,17 @@
 var Zinc = require("zincjs");
 var assert = require('chai').assert;
 var expect = require('chai').expect;
+var THREE= require("three");
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 const dom = new JSDOM(`<body><div id="container" styles="width:1024px;height:1024px"></div></body>`);
 const container = dom.window.document.querySelector("#container");
 global.window = dom.window;
 global.document = dom.window.document;
+var testScene = null;
+global.XMLHttpRequest = require("local-xmlhttprequest").XMLHttpRequest;
+
+var testBoxGeometry = new THREE.BoxGeometry( 10, 10, 10 );
 
 var preRenderCallback = function() {
   return function() {
@@ -16,8 +21,107 @@ var preRenderCallback = function() {
   }
 }
 
+var metaDataReadCallback = function(done) {
+  return function(geometry) {
+    it('Geometry is read successfully', function() {
+      assert.isObject(geometry, 'geometry has been read');
+      done();
+    });
+  }
+}
+
+var geometryCallback = function(done) {
+  return function(geometry) {
+    assert.isObject(geometry, 'geometry has been read'); 
+    done();
+  }
+}
+
+function checkScene(renderer) {
+  var testGeometry = undefined;
+  describe('Scene()', function(){
+    var scene = renderer.createScene("TestScene");
+    it('New scene object', function(){
+      assert.isObject(scene, 'Scene has been created');
+    });
+    var returnedValue = renderer.setCurrentScene(scene);
+    it('Set as current scene', function(){
+      assert.isUndefined(returnedValue, 'Scene has been set correctly');
+    });
+    describe('Local Variables()', function(){
+      it('autoClearFlag', function(){
+        assert.isTrue(scene.autoClearFlag, 'autoClearFlag equals `false`');
+      });
+    });
+    describe('Methods()', function(){
+      var id = 3001;
+      before('addZincGeometry', function() {
+        testGeometry = scene.addZincGeometry(testBoxGeometry, id, 0x00ff00, 1.0, false, false);
+        testGeometry.groupName = "TestGeometry";
+        assert.isObject(testGeometry, 'ZincGeometry has been created');
+        assert.equal(testGeometry.groupName, "TestGeometry", 'ZincGeometry group name has been set');
+      });
+      it('loadView', function() {
+        scene.loadViewURL("test_view.json");
+      });
+      it('onWindowResize', function(){
+        assert.isUndefined(scene.onWindowResize(), 'onWindowResize is successfully called');
+      });
+      it('resetView', function(){
+        assert.isUndefined(scene.resetView(), 'resetView is successfully called');
+      });
+      it('viewAll', function(){
+        assert.isUndefined(scene.viewAll(), 'viewAll is successfully called');
+      });
+      it('getBoundingBox', function() {
+        var boundingBox = scene.getBoundingBox();
+        assert.isObject(boundingBox, 'boundingBox is successfully called');
+        assert.isObject(boundingBox.min,'boundingbox`s min is alright');
+        assert.isObject(boundingBox.max, 'boundingbox`s max is alright');
+      });
+      it('viewAllWithBoundingBox', function() {
+        var boundingBox = scene.getBoundingBox();
+        assert.isUndefined(scene.viewAllWithBoundingBox(boundingBox), 'viewAllWithBoundingBox is successfully called');
+      });
+      it ('forEachGeometry', function(done) {
+        scene.forEachGeometry(geometryCallback(done));
+      });
+      it ('findGeometriesWithGroupName', function() {
+        assert.lengthOf(scene.findGeometriesWithGroupName("TestGeometry"), 1, 'findGeometriesWithGroupName returns 1 geometry');
+      });
+      it ('findGlyphsetsWithGroupName', function() {
+        assert.lengthOf(scene.findGlyphsetsWithGroupName("TestGeometry"), 0, 'findGlyphsetsWithGroupName returns 0 glyphset');
+      });
+      it('updateDirectionalLight', function(){
+        assert.isUndefined(scene.updateDirectionalLight(), 'updateDirectionalLight is successfully called');
+      });
+      it('getCurrentTime', function(){
+        assert.equal(scene.getCurrentTime(), 0.0, 'getCurrentTime is successfully called');
+      });
+      it('setMorphsTime', function(){
+        assert.isUndefined(scene.setMorphsTime(1000.0), 'setMorphsTime is successfully called');
+      });
+      it('getZincGeometryByID', function(){
+        assert.equal(scene.getZincGeometryByID(id), testGeometry, 'getZincGeometryByID returns the correct object');
+      });
+      it('getThreeJSScene', function(){
+        assert.isObject(scene.getThreeJSScene(), 'getThreeJSScene returns the correct object');
+      });
+      it('setInteractiveControlEnable', function(){
+        assert.isUndefined(scene.setInteractiveControlEnable(true), 'setInteractiveControlEnable is successfully called');
+      });
+      it('setStereoEffectEnable', function(){
+        assert.isUndefined(scene.setStereoEffectEnable(true), 'setStereoEffectEnable is successfully called');
+      });
+      it('isStereoEffectEnable', function(){
+        assert.isTrue(scene.isStereoEffectEnable(), 'setStereoEffectEnable is successfully called');
+      });
+    });
+  });
+}
 
 function checkRenderer() {
+  var testRenderer;
   describe('Renderer()', function(){
     it('Renderer is a valid constructor', function(){
       assert.isFunction(Zinc.Renderer, 'Zinc.Renderer is a valid constructor'); 
@@ -115,9 +219,10 @@ function checkRenderer() {
         assert.isUndefined(renderer.transitionScene(scene2, 3000), 'transitionScene is successfully called');
       });
     })
+    testRenderer = renderer;
   })
+  checkScene(testRenderer);
 }
-
 
 function checkZincObject() {
   it('Zinc is a valid object', function(){

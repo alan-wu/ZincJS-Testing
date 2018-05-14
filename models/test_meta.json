@@ -1,0 +1,11 @@
+[
+   {
+      "GroupName" : "Test",
+      "MorphColours" : false,
+      "MorphNormals" : false,
+      "MorphVertices" : false,
+      "Type" : "Surfaces",
+      "URL" : "models/test_models.json"
+   }
+]
+
