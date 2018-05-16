@@ -1,14 +1,8 @@
-var Zinc = require("zincjs");
+var Zinc = require("../ZincJS/src/zinc");
 var assert = require('chai').assert;
 var expect = require('chai').expect;
 var THREE= require("three");
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-const dom = new JSDOM(`<body><div id="container" styles="width:1024px;height:1024px"></div></body>`);
-const container = dom.window.document.querySelector("#container");
-global.window = dom.window;
-global.document = dom.window.document;
-global.XMLHttpRequest = require("local-xmlhttprequest").XMLHttpRequest;
+const container = window.document.querySelector("#container");
 
 var testBoxGeometry = new THREE.BoxGeometry( 10, 10, 10 );
 
