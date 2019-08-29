@@ -1,9 +1,3 @@
 # ZincJS-Testing
 
-Installation:
-
-```Shell
-$ sudo apt-get install libcairo2-dev libjpeg-dev libpango1.0-dev libgif-dev build-essential g++
-$ npm install
-$ npm run build
-```
+This repo will no longer be updated as the testing framework has been moved to ZincJS repostiory instead.
