@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "fs": "0.0.1-security",
-    "three": "^0.92.0"
+    "three": "^0.125.0"
   },
   "nyc": {
     "include": [
